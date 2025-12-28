@@ -1,0 +1,46 @@
+# ============================================================
+# Reglas personalizadas Snort – Práctica IDS
+# Autora: Gisela Alascio del Moral
+# Entorno: Laboratorio (Ubuntu VM)
+# ============================================================
+
+# Regla 1 – Detección de escaneo TCP tipo XMAS
+alert tcp any any -> $HOME_NET any (
+    msg:"Detección de escaneo TCP tipo XMAS dirigido a la red interna";
+    flags:FPU;
+    sid:1000001;
+    rev:2;
+)
+
+# Regla 2 – Detección de patrón 'porn' en tráfico TCP
+alert tcp any any -> any any (
+    msg:"Detección de solicitud HTTP que contiene la cadena 'porn' en la URL";
+    content:"porn";
+    nocase;
+    sid:1000002;
+    rev:1;
+)
+
+# Regla 3 – Detección de ICMP Echo Request saliente
+alert icmp $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"ICMP Echo Request saliente detectado desde la red interna";
+    itype:8;
+    sid:1000003;
+    rev:1;
+)
+
+# Regla 4 – Consulta DNS a servidor no autorizado
+alert udp $HOME_NET any -> !$DNS_SERVERS 53 (
+    msg:"Consulta DNS detectada, dirigida a un servidor no autorizado";
+    sid:1000004;
+    rev:1;
+)
+
+# Regla 5 – Posible ataque DoS (ping flood)
+alert icmp $HOME_NET any -> any any (
+    msg:"Posible ping flood detectado";
+    itype:8;
+    detection_filter: track by_src, count 10, seconds 10;
+    sid:1000005;
+    rev:1;
+)
