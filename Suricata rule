@@ -1,0 +1,14 @@
+# ============================================================
+# Regla personalizada Suricata – Práctica IDS
+# Autora: Gisela Alascio del Moral
+# Entorno: Laboratorio (Ubuntu VM)
+# ============================================================
+
+# Regla – Detección de ICMP Echo Request saliente
+alert icmp $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"ICMP Echo Request saliente detectado desde la red interna";
+    itype:8;
+    sid:1000003;
+    rev:1;
+)
+
